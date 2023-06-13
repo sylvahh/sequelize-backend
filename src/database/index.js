@@ -2,8 +2,6 @@ import cls from 'cls-hooked';
 import { Sequelize } from 'sequelize';
 import { registerModels } from '../models';
 
-
-
 export default class Database {
   constructor(environment, dbConfig) {
     this.environment = environment;
@@ -12,12 +10,13 @@ export default class Database {
   }
 
   async connect() {
-    // set up the namespace for transactions
+    // Set up the namespace for transactions
     const namespace = cls.createNamespace('transactions-namespace');
     Sequelize.useCLS(namespace);
 
-    //create the connection
-    const { username, password, host, port, database, dialect } = this.dbConfig[this.environment];
+    // Create the connection
+    const { username, password, host, port, database, dialect } =
+      this.dbConfig[this.environment];
     this.connection = new Sequelize({
       username,
       password,
@@ -27,28 +26,35 @@ export default class Database {
       dialect,
       logging: this.isTestEnvironment ? false : console.log,
     });
-    //Check if we connected successfully
+
+    // Check if we connected successfully
     await this.connection.authenticate({ logging: false });
+
     if (!this.isTestEnvironment) {
-      console.log('connection to the database has been established successfully');
+      console.log(
+        'Connection to the database has been established successfully'
+      );
     }
-    // register the models
+
+    // Register the models
     registerModels(this.connection);
 
-    //synch models
+    // Sync the models
     await this.sync();
   }
 
   async disconnect() {
-    this.connection.close();
+    await this.connection.close();
   }
+
   async sync() {
     await this.connection.sync({
       logging: false,
       force: this.isTestEnvironment,
     });
+
     if (!this.isTestEnvironment) {
-      console.log('connections synched sucessfully');
+      console.log('Connection synced successfully');
     }
   }
 }
