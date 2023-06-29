@@ -8,20 +8,20 @@ export default (sequelize) => {
       User.RefreshToken = User.hasOne(models.RefreshToken);
       User.Roles = User.hasMany(models.Role);
     }
-    static async hashPassword(passowrd) {
-      return bcrypt.hash(passowrd, environments.saltRounds);
+    static async hashPassword(password) {
+      return bcrypt.hash(password, environments.saltRounds);
     }
 
     static async createNewUser({
       email,
       username,
-      passowrd,
-      firstnName,
+      password,
+      firstName,
       lastName,
       roles,
-      refreshtToken,
+      refreshToken,
     }) {
-      return sequelize.transaction( () => {
+      return sequelize.transaction(() => {
         let rolesToSave = [];
         if (roles && Array.isArray(roles)) {
           rolesToSave = roles.map((role) => ({ role }));
@@ -31,11 +31,11 @@ export default (sequelize) => {
           {
             email,
             username,
-            passowrd,
-            firstnName,
+            password,
+            firstName,
             lastName,
             Roles: rolesToSave,
-            RefreshToken: { token: refreshtToken },
+            RefreshToken: { token: refreshToken },
           },
           { include: [User.Roles, User.RefreshToken] }
         );
@@ -52,50 +52,49 @@ export default (sequelize) => {
           isEmail: {
             msg: 'Not a valid email address',
           },
+          notNull: {
+            msg: 'Email is required',
+          },
         },
       },
-      passowrd: {
+      password: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: false,
         validate: {
           len: {
             args: [8, 100],
-            msg: 'Password must be atleast 8 characters long',
+            msg: 'Password must be at least 8 characters long',
           },
         },
       },
 
       username: {
         type: DataTypes.STRING(50),
-        allowNull: false,
         unique: true,
         validate: {
           len: {
             args: [3, 50],
-            msg: 'Username must contain between 3 - 50 characters',
+            msg: 'Username must contain between 3 to 50 characters',
           },
         },
       },
       firstName: {
         type: DataTypes.STRING(50),
-        allowNull: false,
         unique: false,
         validate: {
           len: {
             args: [3, 50],
-            msg: 'first name must contain between 3 - 50 characters',
+            msg: 'First name must contain between 3 to 50 characters',
           },
         },
       },
       lastName: {
         type: DataTypes.STRING(50),
-        allowNull: false,
         unique: false,
         validate: {
           len: {
             args: [3, 50],
-            msg: 'last name must contain between 3 - 50 characters',
+            msg: 'Last name must contain between 3 to 50 characters',
           },
         },
       },
@@ -105,22 +104,25 @@ export default (sequelize) => {
       modelName: 'User',
       defaultScope: { attributes: { exclude: ['password'] } },
       scopes: {
-        withPassoword: { attributes: { include: ['password'] } },
+        withPassword: { attributes: { include: ['password'] } },
       },
     }
   );
 
-  User.prototype.comparePasswords = async (passowrd) => {
-    return bcrypt.compare(passowrd, this.passowrd);
+  User.prototype.comparePasswords = async function (password) {
+    return bcrypt.compare(password, this.password);
   };
+
   // hash password before save
   User.beforeSave(async (user, options) => {
-    const hashedPassword = await User.hashPassword(user.passowrd);
-    user.passowrd = hashedPassword;
+    if (user.password) {
+    const hashedPassword = await User.hashPassword(user.password);
+    user.password = hashedPassword;
+    }
   });
-  
+
   User.afterCreate((user, options) => {
-    delete user.dataValues.passowrd
-  })
+    delete user.dataValues.password;
+  });
   return User;
 };
