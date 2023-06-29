@@ -21,13 +21,13 @@ export default (sequelize) => {
       roles,
       refreshtToken,
     }) {
-      return sequelize.transaction(async () => {
+      return sequelize.transaction( () => {
         let rolesToSave = [];
         if (roles && Array.isArray(roles)) {
           rolesToSave = roles.map((role) => ({ role }));
         }
 
-        await User.create(
+        return User.create(
           {
             email,
             username,
@@ -118,5 +118,9 @@ export default (sequelize) => {
     const hashedPassword = await User.hashPassword(user.passowrd);
     user.passowrd = hashedPassword;
   });
+  
+  User.afterCreate((user, options) => {
+    delete user.dataValues.passowrd
+  })
   return User;
 };

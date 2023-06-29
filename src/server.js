@@ -1,5 +1,5 @@
 import './config'
-import Database from './database '
+import Database from './database'
 import environment from './config/environments'
 import dbConfig from './config/database'
 
