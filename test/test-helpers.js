@@ -44,10 +44,10 @@ export default class TestHelpers {
     return User.createNewUser(data);
   }
 
-//   static getApp() {
-//     const App = require('../src/app').default;
-//     return new App().getApp();
-//   }
+  static getApp() {
+    const App = require('../src/app').default;
+    return new App().getApp();
+  }
 
 //   static async registerNewUser(options = {}) {
 //     const {
