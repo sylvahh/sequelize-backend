@@ -1,4 +1,4 @@
-import { Model, DataType, DataTypes } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 
 export default (sequelize) => {
   class RefreshToken extends Model {

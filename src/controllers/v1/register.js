@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
   await User.createNewUser({ ...req.body, refreshToken });
   return res
     .status(201)
-    .send({ success: true, message: 'User created successfully', data: accessToken, refreshToken });
+    .send({ success: true, message: 'User created successfully', data: {accessToken, refreshToken} });
 });
 
 export default router
