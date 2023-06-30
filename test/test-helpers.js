@@ -49,14 +49,14 @@ export default class TestHelpers {
     return new App().getApp();
   }
 
-//   static async registerNewUser(options = {}) {
-//     const {
-//       email = 'test@example.com',
-//       password = 'Test123#',
-//       endpoint = '/v1/register',
-//     } = options;
-//     return request(TestHelpers.getApp())
-//       .post(endpoint)
-//       .send({ email, password });
-//   }
+  static async registerNewUser(options = {}) {
+    const {
+      email = 'test@example.com',
+      password = 'Test123#',
+      endpoint = '/v1/register',
+    } = options;
+    return request(TestHelpers.getApp())
+      .post(endpoint)
+      .send({ email, password });
+  }
 }
