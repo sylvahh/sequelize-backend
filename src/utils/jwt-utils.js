@@ -1,20 +1,21 @@
-import Jwt from 'jsonwebtoken';
-import environments from '../config/environments';
+import jwt from 'jsonwebtoken';
+import environment from '../config/environments';
 
 export default class JWTUtils {
   static generateAccessToken(payload, options = {}) {
     const { expiresIn = '1d' } = options;
-    return Jwt.sign(payload, environments.jwtAccessTokenSecret, { expiresIn });
+    return jwt.sign(payload, environment.jwtAccessTokenSecret, { expiresIn });
   }
+
   static generateRefreshToken(payload) {
-    return Jwt.sign(payload, environments.jwtRefreshTokenSecret);
+    return jwt.sign(payload, environment.jwtRefreshTokenSecret);
   }
 
   static verifyAccessToken(accessToken) {
-    return Jwt.verify(accessToken, environments.jwtAccessTokenSecret);
+    return jwt.verify(accessToken, environment.jwtAccessTokenSecret);
   }
 
-  static verifyRefreshToken(refreshToken) {
-    return Jwt.verify(refreshToken, environments.jwtRefreshTokenSecret);
+  static verifyRefreshToken(accessToken) {
+    return jwt.verify(accessToken, environment.jwtRefreshTokenSecret);
   }
 }
