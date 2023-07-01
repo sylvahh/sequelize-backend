@@ -8,7 +8,7 @@ let db;
 export default class TestHelpers {
   static async startDb() {
     db = new Database('test', dbConfig);
-      await db.connect();
+    await db.connect();
     return db;
   }
 
@@ -55,8 +55,6 @@ export default class TestHelpers {
       password = 'Test123#',
       endpoint = '/v1/register',
     } = options;
-    return request(TestHelpers.getApp())
-      .post(endpoint)
-      .send({ email, password });
+    return request(TestHelpers.getApp()).post(endpoint).send({ email, password });
   }
 }
