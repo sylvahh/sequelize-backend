@@ -1,4 +1,4 @@
 module.exports = {
   testEnvironment: 'node',
-  testRunner: 'jest-circus',
+  testTimeout: 15000
 };

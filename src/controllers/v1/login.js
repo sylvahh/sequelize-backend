@@ -1,16 +1,20 @@
 import { Router } from 'express';
 import models from '../../models';
 import JWTUtils from '../../utils/jwt-utils';
+import asyncWrapper from '../../utils/asyncWrapper';
 
 const router = Router();
 const { User } = models;
 
-router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.scope('withPassword').findOne({ where: { email } });
-  if (!user || !(await user.comparePasswords(password))) {
-    res.status(401).send({ success: false, message: 'Invalid credentials' });
-  } else {
+router.post(
+  '/login',
+  asyncWrapper(async (req, res) => {
+    debugger;
+    const { email, password } = req.body;
+    const user = await User.scope('withPassword').findOne({ where: { email } });
+    if (!user || !(await user.comparePasswords(password))) {
+      res.status(401).send({ success: false, message: 'Invalid credentials' });
+    }
     const payload = { email };
     const accessToken = JWTUtils.generateAccessToken(payload);
     const savedRefreshToken = await user.getRefreshToken();
@@ -32,7 +36,7 @@ router.post('/login', async (req, res) => {
         refreshToken,
       },
     });
-  }
-});
+  })
+);
 
 export default router;

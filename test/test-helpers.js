@@ -55,6 +55,8 @@ export default class TestHelpers {
       password = 'Test123#',
       endpoint = '/v1/register',
     } = options;
-    return request(TestHelpers.getApp()).post(endpoint).send({ email, password });
+    return request(TestHelpers.getApp())
+      .post(endpoint)
+      .send({ email, password });
   }
 }
